@@ -44,34 +44,6 @@ def vec_length(vector: np.ndarray):
     assert(vector.ndim == 1)
     return np.sqrt(np.sum(np.square(vector)))
 
-def compute_eigenvalues(mat: np.ndarray):
-    assert(np.ndim(mat) == 2)
-    assert(mat.shape[0] == mat.shape[1])
-    results = np.linalg.eigvals(mat)
-    return results
-    
-def find_determinant(mat: np.ndarray):
-    return np.linalg.det(mat)
-
-def compute_matrix(mat: np.ndarray, sigmas_squared: list[float]):
-    assert(mat.shape[0] == mat.shape[1])
-    vectors = []
-    for sigma_squared in sigmas_squared:
-        assert (sigma_squared != 0)
-        size = mat.shape[0]
-        new_mat = np.copy(mat)
-        for i in range (size):
-            new_mat[i,i] -= sigma_squared
-        unit_vector = np.zeros(new_mat.shape[1])
-        unit_vector[0] = 1
-        M = np.vstack([new_mat, unit_vector])  # Add normalization row
-        b = np.zeros(new_mat.shape[0] + 1)            # Adjust b vector
-        b[-1] = 1  # Normalization value
-        x, residuals, rank, s = np.linalg.lstsq(M, b, rcond=None)
-        vectors.append()
-    print(vectors)
-    return None
-
 if __name__ == "__main__":
     matrix = np.array([
         [3,2,2],
