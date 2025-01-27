@@ -13,11 +13,11 @@ def find_SVD(A: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     sigmas = np.sqrt(np.abs(sorted_eigvals))
     V = sorted_eigvecs
     U = compute_U_matrix(A, V, sigmas)
-    Sigma_Matrix = np.zeros(A.shape)
-    np.fill_diagonal(Sigma_Matrix, sigmas)
-    
-    print(np.matmul(np.matmul(U, Sigma_Matrix), V.transpose()))
+    S = np.zeros(A.shape)
+    np.fill_diagonal(S, sigmas)
 
+    return (U, S, V)
+    
 def compute_U_matrix(A: np.ndarray, V: np.ndarray, sigmas: np.ndarray):
     assert(np.ndim(A) == 2)
     m = A.shape[0]
@@ -44,24 +44,47 @@ def vec_length(vector: np.ndarray):
     assert(vector.ndim == 1)
     return np.sqrt(np.sum(np.square(vector)))
 
+def recombine_SVD(U: np.ndarray, S: np.ndarray, V: np.ndarray, k: int):
+    # (mxk) (kxk) (kxn)
+    # return original
+    if (k <= 0): return np.matmul(np.matmul(U, S), V.transpose())
+
+    m = S.shape[0]
+    n = S.shape[1]
+
+    assert k <= max(m, n)
+    reduced_U = U[:, :k]
+    reduced_S = S[:k, :k]
+    reduced_V = V[:, :k]
+    return np.matmul(np.matmul(reduced_U, reduced_S), reduced_V.transpose())
+
+
+
 if __name__ == "__main__":
-    matrix = np.array([
-        [3,2,2],
-        [2,3,-2]
-    ])
-    find_SVD(matrix)
-    matrix1 = np.array([
-        [1,2,3,4],
-        [5,6,7,8],
-        [9,10,11,12],
-        [13,14,15,16],
-        [17,18,19,20]
-    ])
-    find_SVD(matrix1)
+    # matrix = np.array([
+    #     [3,2,2],
+    #     [2,3,-2]
+    # ])
+    # find_SVD(matrix)
+    # matrix1 = np.array([
+    #     [1,2,3,4],
+    #     [5,6,7,8],
+    #     [9,10,11,12],
+    #     [13,14,15,16],
+    #     [17,18,19,20]
+    # ])
+    # find_SVD(matrix1)
     matrix2 = np.array([
         [2,1],
         [1,-1]    
     ])
-    find_SVD(matrix2)
-    
+    U, S, V = find_SVD(matrix2)
+    print(U)
+    print(S)
+    print(V)
+    tU, tS, tVh = np.linalg.svd(matrix2)
+    tV = tVh.transpose()
+    print(tU)
+    print(tS)
+    print(tV)    
     
